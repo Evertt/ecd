@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use AppBundle\Entity\Medewerker;
@@ -24,6 +25,13 @@ class MedewerkerType extends AbstractType
         }
     }
 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if (!key_exists('data', $options) || !$options['data']) {
+            $options['data'] = $this->medewerker;
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -31,7 +39,6 @@ class MedewerkerType extends AbstractType
     {
         $resolver->setDefaults([
             'class' => Medewerker::class,
-            'data' => $this->medewerker,
             'query_builder' => function (EntityRepository $repository) {
                 return $repository->createQueryBuilder('medewerker')
                     ->orderBy('medewerker.voornaam');
